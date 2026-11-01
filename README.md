@@ -1,18 +1,44 @@
-# B站视频文案提取
+<h1 align="center">B站视频文案提取</h1>
 
-**English**
+<p align="center">
+  <a href="#english">English</a> ·
+  <a href="#chinese">简体中文</a> ·
+  <a href="#usage">用法</a> ·
+  <a href="#install">安装</a> ·
+  <a href="#output">输出结构</a> ·
+  <a href="#limits">已知限制</a>
+</p>
+
+<p align="center">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="python" src="https://img.shields.io/badge/python-3.7%2B-3776AB?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="dependencies" src="https://img.shields.io/badge/dependencies-0-brightgreen?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-6e7781?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="subtitles" src="https://img.shields.io/badge/B%E7%AB%99-%E5%AE%98%E6%96%B9%E5%AD%97%E5%B9%95-FB7299?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="credential" src="https://img.shields.io/badge/login-own%20SESSDATA%20only-00A1D6?style=flat-square&amp;labelColor=1b1f23">
+</p>
+
+<p align="center"><sub>纯 Python 标准库 · 零第三方依赖 · 不需要登录第三方平台 · 不需要 API Key</sub></p>
+
+<a id="english"></a>
+
+## English
 
 **Bilibili Copy Extractor** — batch-export a Bilibili video's official subtitles into a Markdown copy package.
 Prefers human-contributed CC subtitles and falls back to Bilibili's own AI-generated subtitles. Works for a single video, the latest N uploads of a creator, all of their uploads, top videos by views or likes, a date range, or a whole collection / series.
 
 Pure Python standard library — **zero third-party dependencies**, no ffmpeg, no yt-dlp, no browser automation. The only credential it needs is a `SESSDATA` cookie from your own Bilibili account: **no third-party login, no API key, no sign-up**.
 
-**中文**
+<a id="chinese"></a>
+
+## 中文
 
 **B站视频文案提取** —— 把 B站视频的**官方字幕**（人工 CC 优先，否则用 B站 AI 自动生成的字幕）批量导出成 Markdown 文案包。
 单视频、某个 UP 主的最近 N 条 / 全部、按播放量或点赞排名、某段日期区间、某个合集或系列，都能一次拿走。
 
 纯 Python 标准库实现，**零第三方依赖**，不需要 ffmpeg / yt-dlp / 浏览器自动化。只需要你自己 B站账号的 `SESSDATA`：**无需登录其他平台、无需 API Key、无需注册**。
+
+<a id="usage"></a>
 
 ## 它能做什么
 
@@ -44,6 +70,8 @@ python scripts/bili_copy.py help
 | 第三方包 | **不需要**，不要 `pip install` 任何东西 |
 | ffmpeg / yt-dlp | **不需要**，只取官方字幕 JSON，不下载视频或音频 |
 | 网络 | 能访问 `api.bilibili.com`、`www.bilibili.com` 及字幕 CDN |
+
+<a id="install"></a>
 
 ## 安装
 
@@ -85,6 +113,8 @@ B站把字幕地址锁在登录态后面——未登录时 `subtitle_url` 是空
    - 当前目录建 `sessdata.txt`，粘贴值保存（最省事）
 
 优先级：`--sessdata` > 环境变量 > `sessdata.txt`。
+
+<a id="output"></a>
 
 ## 输出结构
 
@@ -137,6 +167,8 @@ B站把字幕地址锁在登录态后面——未登录时 `subtitle_url` 是空
 | `like` | 逐条查，条数越多越久 | 列表接口不含点赞数，只能一条条查；用 `--scan N` 圈定候选池 |
 
 投稿列表全量结果缓存 30 分钟，重复查询秒开。
+
+<a id="limits"></a>
 
 ## 已知限制
 
