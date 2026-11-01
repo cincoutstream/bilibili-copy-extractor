@@ -1,11 +1,20 @@
-<img src="assets/icon.png" width="96" align="right" alt="B站文案提取">
+<img src="assets/icon.png" width="96" align="right" alt="Bilibili Copy Extractor">
 
 # B站视频文案提取
 
-把 B站视频的**官方字幕**（人工 CC 优先，否则 B站 AI 自动生成）批量导出成 Markdown 文案包。
+**English**
+
+**Bilibili Copy Extractor** — batch-export a Bilibili video's official subtitles into a Markdown copy package.
+Prefers human-contributed CC subtitles and falls back to Bilibili's own AI-generated subtitles. Works for a single video, the latest N uploads of a creator, all of their uploads, top videos by views or likes, a date range, or a whole collection / series.
+
+Pure Python standard library — **zero third-party dependencies**, no ffmpeg, no yt-dlp, no browser automation. The only credential it needs is a `SESSDATA` cookie from your own Bilibili account: **no third-party login, no API key, no sign-up**.
+
+**中文**
+
+**B站视频文案提取** —— 把 B站视频的**官方字幕**（人工 CC 优先，否则用 B站 AI 自动生成的字幕）批量导出成 Markdown 文案包。
 单视频、某个 UP 主的最近 N 条 / 全部、按播放量或点赞排名、某段日期区间、某个合集或系列，都能一次拿走。
 
-纯 Python 标准库实现，**零第三方依赖**，不需要 ffmpeg / yt-dlp / 浏览器自动化。
+纯 Python 标准库实现，**零第三方依赖**，不需要 ffmpeg / yt-dlp / 浏览器自动化。只需要你自己 B站账号的 `SESSDATA`：**无需登录其他平台、无需 API Key、无需注册**。
 
 ## 它能做什么
 
@@ -151,14 +160,6 @@ B站把字幕地址锁在登录态后面——未登录时 `subtitle_url` 是空
 
 `sessdata.txt` 等同账号登录凭据：只写本地、不写日志、不回显。用完可删，或在 B站「退出登录」使其立即失效。
 `.gitignore` 已排除 `sessdata.txt`，但**提交前仍请自行确认**没有把凭据带进仓库。
-
-## 免责声明
-
-- 本项目为**非官方**工具，与哔哩哔哩（bilibili）无任何隶属或背书关系。
-- 仓库图标取自 B站官方站点资源（`i0.hdslb.com` 的 512px 站点图标），相关图形商标归哔哩哔哩所有，此处仅用于标识本工具所处理的内容平台，**不表示任何授权或背书**；如权利人提出要求，将立即移除。
-- `assets/icon-custom.svg` 是自制的 B站配色图形，不含官方商标元素，可在需要规避商标时替换使用。
-- 仅用于提取你本就有权访问的公开字幕内容，请遵守 B站的用户协议与 robots 规则，不要用于批量抓取或二次分发他人作品。
-- 字幕内容版权归原视频作者所有。
 
 ## License
 
