@@ -44,7 +44,7 @@ The left column names the task, the right column gives a request that can be sen
 | Resume after interruption | The previous run stopped midway; continue from the completed position |
 | Output location | Save the result under D:\data |
 
-A creator can be identified by name, uid, or space URL. Output goes to a `bili文案` folder under the working directory unless another location is given.
+Replace `<creator>` with a name, uid, or space URL. Output goes to a `bili文案` folder under the working directory unless another location is given.
 
 ## Requirements
 
@@ -57,21 +57,23 @@ Python 3.7 or later.
 Send the following message in the conversation; the agent performs the installation:
 
 ```
-Install https://github.com/cincoutstream/bilibili-copy-extractor as a skill.
+Install bilibili-copy-extractor as a skill.
+Prefer GitHub: https://github.com/cincoutstream/bilibili-copy-extractor
+If GitHub is unreachable, install the same skill from SkillHub: skillhub install @user_c14bff27/bilibili-copy-extractor
 It contains SKILL.md and scripts/bili_copy.py. When the installation is done, tell me which requests I can make to extract text from Bilibili videos.
 ```
 
-This option assumes no particular agent tool; any agent that can install skills can act on it.
+This option assumes no particular agent tool; any agent that can install skills can act on it. GitHub is unreachable on some networks, in which case the SkillHub package holds the same content.
 
-### Option 2: SkillHub
+### Option 2: Install it yourself
+
+From SkillHub:
 
 ```
-skillhub install bilibili-copy-extractor
+skillhub install @user_c14bff27/bilibili-copy-extractor
 ```
 
-### Option 3: Manual placement
-
-Download the repository and place the whole directory in the skills directory of the agent tool in use. The location is documented by that tool.
+Alternatively download the repository and place the whole directory in the skills directory of the agent tool in use. The location is documented by that tool.
 
 ## Credential and safety
 
