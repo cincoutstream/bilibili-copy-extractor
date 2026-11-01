@@ -1,5 +1,3 @@
-<img src="assets/icon.png" width="96" align="right" alt="Bilibili Copy Extractor">
-
 # B站视频文案提取
 
 **English**
