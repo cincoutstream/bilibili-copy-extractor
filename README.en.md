@@ -9,98 +9,84 @@
 <p align="center">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&amp;labelColor=1b1f23">
   <img alt="python" src="https://img.shields.io/badge/python-3.7%2B-3776AB?style=flat-square&amp;labelColor=1b1f23">
-  <img alt="dependencies" src="https://img.shields.io/badge/dependencies-0-brightgreen?style=flat-square&amp;labelColor=1b1f23">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-6e7781?style=flat-square&amp;labelColor=1b1f23">
   <img alt="subtitles" src="https://img.shields.io/badge/B%E7%AB%99-%E5%AE%98%E6%96%B9%E5%AD%97%E5%B9%95-FB7299?style=flat-square&amp;labelColor=1b1f23">
   <img alt="credential" src="https://img.shields.io/badge/%E7%99%BB%E5%BD%95-%E5%8F%AA%E9%9C%80%E8%87%AA%E5%B7%B1%E7%9A%84%20SESSDATA-fb7299?style=flat-square&amp;labelColor=1b1f23">
 </p>
 
-<p align="center"><sub>Python 3.7+ · standard library only · no third-party dependencies</sub></p>
+<p align="center"><sub>Python 3.7+</sub></p>
 
 <br/>
 
 ## Overview
 
-Exports Bilibili subtitles to Markdown: one md file per video, plus an index. Subtitles come from the human-contributed CC track or from Bilibili's AI-generated track. The CC track is preferred and the AI track is used when no CC track exists. The tool performs no speech recognition and produces no subtitle text of its own.
+Exports Bilibili subtitles to Markdown: one md file per video, plus an index table and a machine-readable manifest. Subtitles come from the human-contributed CC track or from Bilibili's AI-generated track. The CC track is preferred and the AI track is used when no CC track exists. The tool reads only the subtitle data Bilibili already provides and performs no speech recognition.
 
-Subtitle language follows whatever tracks Bilibili provides. Nearly every video is Chinese; a small number carry another language uploaded by the creator.
+Subtitle language follows the tracks Bilibili provides. Nearly every video is Chinese; a small number carry another language uploaded by the creator.
 
-## What it does
+## What the skill can do
 
-| Use case | Command |
+The left column names the task, the right column gives a request that can be sent to an agent as it stands.
+
+| Task | Example request |
 |---|---|
-| Single video | `python scripts/bili_copy.py "https://www.bilibili.com/video/BV1xx411c7mD"` |
-| Latest N uploads | `python scripts/bili_copy.py --up <creator> --limit 10` |
-| All uploads | `python scripts/bili_copy.py --up <creator> --all --yes` |
-| Ranked by likes | `python scripts/bili_copy.py --up <creator> --sort like --limit 10` |
-| Ranked by views | `python scripts/bili_copy.py --up <creator> --sort play --limit 10` |
-| Date range | `python scripts/bili_copy.py --up <creator> --since 2026-10-01 --until 2026-10-31` |
-| Named collection or series | `python scripts/bili_copy.py --up <creator> --collection <name>` |
-| Append to an existing folder | `python scripts/bili_copy.py --up <creator> --limit 15 --into <folder>` |
-| List only, no download | `python scripts/bili_copy.py --up <creator> --limit 10 --dry-run` |
+| Single video | Export the subtitles of this video as text: <video URL> |
+| Latest uploads | Export the subtitles of the 10 most recent videos from <creator> |
+| All uploads | Export the subtitles of every upload from <creator> |
+| Top videos by likes | Export the 10 most-liked videos of <creator> as text |
+| Top videos by views | Export the 10 most-viewed videos of <creator> as text |
+| Date range | Export the videos <creator> published in October 2026 |
+| Collection or series | Export the subtitles of the "<series>" series from <creator> |
+| List collections | List the collections and series of <creator> |
+| List only | List the titles of the 10 most recent videos from <creator> before extracting |
+| Append to an existing folder | Add the 15 most recent videos of <creator> to the folder from the last run |
+| Packaging and timeline | Package the result as a zip and include the subtitle timeline files |
+| Resume after interruption | The previous run stopped midway; continue from the completed position |
+| Output location | Save the result under D:\data |
 
-`--up` accepts a creator name, a uid, or a space URL. `--zip` packages the output as a zip archive, `--srt` writes a timeline file, `--resume` skips videos already extracted, `--workers` sets the concurrency, and `--outdir` sets the output root (default `./bili文案`). Full usage:
-
-```bash
-python scripts/bili_copy.py help
-```
+A creator can be identified by name, uid, or space URL. Output goes to a `bili文案` folder under the working directory unless another location is given.
 
 ## Requirements
 
-| Item | Requirement |
-|---|---|
-| Python | 3.7 or later |
-| Third-party packages | None; `pip install` is not needed |
-| ffmpeg / yt-dlp | Not required; only subtitle JSON is read, no audio or video is downloaded |
-| Browser automation | Not required; no dependency on Selenium or Playwright |
-| Network | Access to `api.bilibili.com`, `www.bilibili.com`, and the subtitle CDN |
-| Disk | Roughly 20 to 30 KB for a 20 to 30 minute video |
+Python 3.7 or later.
 
 ## Install
 
-### Option 1: SkillHub
+### Option 1: Let an agent install it
 
-```bash
+Send the following message in the conversation; the agent performs the installation:
+
+```
+Install https://github.com/cincoutstream/bilibili-copy-extractor as a skill.
+It contains SKILL.md and scripts/bili_copy.py. When the installation is done, tell me which requests I can make to extract text from Bilibili videos.
+```
+
+This option assumes no particular agent tool; any agent that can install skills can act on it.
+
+### Option 2: SkillHub
+
+```
 skillhub install bilibili-copy-extractor
 ```
 
-### Option 2: Manual copy
+### Option 3: Manual placement
 
-```bash
-git clone https://github.com/cincoutstream/bilibili-copy-extractor.git
-```
+Download the repository and place the whole directory in the skills directory of the agent tool in use. The location is documented by that tool.
 
-Place the directory in the skills folder of the runtime in use:
+## Credential and safety
 
-| Runtime | Path |
-|---|---|
-| OpenBitFun | `%APPDATA%\openbitfun\skills\bilibili-copy-extractor\` |
-| macOS / Linux | `~/.config/openbitfun/skills/bilibili-copy-extractor/` |
+The only credential required is the `SESSDATA` cookie of the user's own Bilibili account.
 
-### Option 3: Run without installing
-
-From the repository root, run `python scripts/bili_copy.py --help`.
-
-## Credentials
-
-The only credential required is the `SESSDATA` cookie of a Bilibili account. No API key and no third-party account are involved.
-
-Bilibili returns subtitle URLs only to signed-in clients. Without a session, `subtitle_url` is an empty string and `is_lock` is `true`. This is a restriction on the server side, not a defect in the script.
+Bilibili returns subtitle URLs only to signed-in requests. An anonymous request succeeds but yields an empty subtitle list. This is a server-side restriction, not a defect of the tool.
 
 Steps:
 
-1. Sign in to `bilibili.com` in a browser and open the developer tools with F12
-2. Go to Application, then Cookies, and select the `https://www.bilibili.com` domain
+1. Sign in to `bilibili.com` in a browser and press F12 to open the developer tools
+2. Open Application, then Cookies, and select the `https://www.bilibili.com` domain
 3. Copy the Value of the `SESSDATA` row
-4. Supply the value in any one of the following ways
+4. Send the copied value to the agent, which stores it on the local machine
 
-| Method | Usage |
-|---|---|
-| Command-line argument | `--sessdata <value>` |
-| Environment variable | `BILI_SESSDATA` |
-| File | `sessdata.txt` in the current directory |
-
-The lookup order is command-line argument, then environment variable, then file. The value is equivalent to an account credential; do not paste it into chat tools or public channels.
+The value is equivalent to an account credential. Do not paste it into group chats or public channels. It stays on the local machine, is never written to logs, and is never echoed in the terminal or the conversation. It can be removed after the run, or invalidated immediately by signing out of Bilibili.
 
 ## Output layout
 
@@ -115,13 +101,13 @@ Each run writes one folder:
     _progress.json   resume state, do not edit by hand
 ```
 
-Folder and file names are generated in Chinese, matching the interface language of the source site. Each md file opens with YAML front matter carrying the bvid, title, creator, publish date, duration, view, like, favourite, coin, danmaku and comment counts, subtitle source, word count and coverage, followed by the segmented transcript.
+Folder and file names are generated in Chinese, following the interface language of the source site. Each Markdown file opens with a field block carrying the bvid, title, creator, publish date, duration, view, like, favourite, coin, danmaku and comment counts, subtitle source, word count and coverage, followed by the segmented transcript. When packaging is requested, the zip archive is written next to the folder.
 
 ## Naming rules
 
-The folder name is `{creator}_{batch}视频文案_{date}`:
+Batch folders are named from the creator, a batch label and the generation date. A single video uses its own form:
 
-| Use case | Folder name example |
+| Task | Folder name example |
 |---|---|
 | Single video | `<creator>_2026-10-31_<video title>` |
 | Latest N | `<creator>_最近10条视频文案_20261031` |
@@ -132,68 +118,57 @@ The folder name is `{creator}_{batch}视频文案_{date}`:
 | Date range | `<creator>_2026-10-20至2026-10-25视频文案_20261031` |
 | Collection or series | `<creator>_合集-<name>视频文案_20261031` |
 
-The file name is `{nn}_{title}_{publish date}.md`:
+File names follow `{index}_{title}_{publish date}.md`:
 
 | Part | Rule |
 |---|---|
-| Sequence number | Rank within the batch, matching the `_index.md` table so that alphabetical folder order equals rank order |
-| Title | Follows the sequence number, truncated to 50 characters, with the Windows-reserved characters `\ / : * ? " < > \|` replaced |
-| Date | Placed last, so the publish date is readable without opening the file |
+| Index | Rank within the batch, matching the row order of the index table, so that name order in a file manager equals rank order. Padded to two digits; beyond 99 entries the width grows to fit |
+| Title | Follows the index, truncated to 50 characters. The Windows-reserved characters `\ / : * ? " < > \|` are replaced with underscores |
+| Date | Placed last, so the publish date is visible from the directory listing |
 
 ## Appending to an existing folder
 
-With `--into`, output goes into one folder instead of a new batch folder:
+By default every run creates a new folder. To merge newly extracted videos into an existing folder, name that folder in the request; the output goes into it and no new batch folder is created.
 
-```bash
-# First run: creates the folder
-python scripts/bili_copy.py --up <creator> --limit 10
-
-# Later runs: append into that folder
-python scripts/bili_copy.py --up <creator> --limit 15 --into <folder name or path>
-```
-
-Rules applied when appending:
+The following rules apply:
 
 | Case | Behaviour |
 |---|---|
-| Video already in the folder | Skipped after a bvid check, not downloaded again |
+| Video already in the folder | Skipped after a bvid check, not extracted again |
 | Numbering of new entries | Continues after the highest existing number; existing files are not renamed |
-| `_index.md` and `_manifest.json` | Rewritten with the old and new entries merged |
-| Folder name | Unchanged, regardless of entry count |
+| Index and manifest files | Rewritten with the old and new entries merged |
+| Folder name | Unchanged regardless of entry count. A folder named `最近10条` may end up holding 15 files |
+| Folder does not exist | Created automatically, so the folder can serve as a long-running project directory |
 
-Without `--into`, a new batch folder is created.
+Without a target folder, a new batch folder is created.
 
-## Sorting and cost
+## Sort order and run time
 
-| Sort key | Cost | Notes |
+| Sort order | Run time | Notes |
 |---|---|---|
-| `newest` / `oldest` | One request | Reads only the requested number of entries |
-| `play` | Requires paging through the whole list; longer for prolific creators | The list endpoint carries view counts, so the data is exact |
-| `like` | One request per video | The list endpoint carries no like counts; use `--scan N` to bound the candidate pool |
+| Latest or earliest N | Shortest; only the requested entries are read | The upload list is not traversed in full |
+| By views | Longer for creators with many uploads | The whole list must be traversed to find the highest view count |
+| By likes | Longer for larger batches | Like counts are absent from the list data and must be read per video. Candidates are drawn from the 200 most recent uploads by default, and a wider range can be requested |
 
-The creator upload list is cached for 30 minutes, so repeated queries issue no new requests.
+A run is confirmed first when it would extract more than 100 videos, and when sorting by likes over a candidate range of more than 400 videos.
+
+The result of a full upload-list read is cached for 30 minutes, so repeat extractions for the same creator within that window reuse it.
 
 ## Known limitations
 
-- The AI track has to be generated first. Bilibili creates it only after a user selects 字幕 then 中文 in the player, which takes about 10 to 30 seconds on first use and is then cached for everyone. When no track is available the script writes a note file and records it in the index; trigger the track in the player and run the command again.
-- Homophone errors come from Bilibili's own transcription, not from extraction. Cleaning them up requires a separate language model pass.
-- Some AI tracks carry no punctuation. The script restores segmentation using sentence-ending punctuation, discourse markers, and function-word boundaries, in that order.
-- The space API is rate limited. A high `--workers` value can trigger HTTP 412.
+- The AI track must exist before it can be read. Bilibili creates it only after a user selects 字幕 then 中文 in the player, which takes about 10 to 30 seconds the first time and is then available to everyone. When no track is available, a note file is written into the folder and recorded in the index; trigger the track in the player and extract again.
+- Homophone errors come from Bilibili's own transcription, not from extraction. Cleaning them up requires an additional language model pass.
+- Some AI tracks carry no punctuation. Segmentation is restored from sentence-ending punctuation, discourse markers and function-word boundaries.
+- The API is rate limited. Processing too many videos at once triggers risk control, which appears as a rejected request. Wait a few minutes and retry, or process fewer videos at a time in several batches.
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| Empty subtitle list | Missing or expired SESSDATA; fetch the value again |
-| `code=-352` or `HTTP 412` | Rate limiting; wait a few minutes and retry, or lower `--workers` |
-| A collection returns 1 video | The name did not match; run `--list-collections` to get the exact name |
-| Fewer videos than expected | Check `--limit`. The date-range mode expands automatically; other modes take exactly the requested count |
-
-## Security
-
-`sessdata.txt` is equivalent to an account credential. The script writes it only to local disk, never to logs, and never echoes it to the terminal. Delete the file when finished, or sign out of Bilibili to invalidate it immediately.
-
-`.gitignore` excludes `sessdata.txt`. Verify before committing that no credential has reached the repository.
+| Empty subtitle list | Missing or expired SESSDATA; obtain the value again and retry |
+| Request rejected with 412 or -352 | Bilibili risk control; wait a few minutes and retry, or process fewer videos at a time in several batches |
+| A collection returns 1 video | The name did not match. Ask the agent to list the collections and series of the creator, then use the exact name |
+| Fewer videos than expected | Check the requested count. The date-range mode expands automatically; other modes take exactly the requested count |
 
 ## License
 
