@@ -11,19 +11,19 @@
   <img alt="python" src="https://img.shields.io/badge/python-3.7%2B-3776AB?style=flat-square&amp;labelColor=1b1f23">
   <img alt="dependencies" src="https://img.shields.io/badge/dependencies-0-brightgreen?style=flat-square&amp;labelColor=1b1f23">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-6e7781?style=flat-square&amp;labelColor=1b1f23">
-  <img alt="subtitles" src="https://img.shields.io/badge/B%E7%AB%99-official%20subtitles-FB7299?style=flat-square&amp;labelColor=1b1f23">
-  <img alt="credential" src="https://img.shields.io/badge/login-own%20SESSDATA%20only-00A1D6?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="subtitles" src="https://img.shields.io/badge/B%E7%AB%99-%E5%AE%98%E6%96%B9%E5%AD%97%E5%B9%95-FB7299?style=flat-square&amp;labelColor=1b1f23">
+  <img alt="credential" src="https://img.shields.io/badge/%E7%99%BB%E5%BD%95-%E5%8F%AA%E9%9C%80%E8%87%AA%E5%B7%B1%E7%9A%84%20SESSDATA-fb7299?style=flat-square&amp;labelColor=1b1f23">
 </p>
 
-<p align="center"><sub>Pure Python standard library · zero third-party dependencies · no third-party login, no API key, no sign-up</sub></p>
+<p align="center"><sub>Python 3.7+ · standard library only · no third-party dependencies</sub></p>
 
 <br/>
 
-Batch-export a Bilibili video's official subtitles into a Markdown copy package — one Markdown file per video plus an index you can scan.
+## Overview
 
-It prefers human-contributed CC subtitles and falls back to Bilibili's own AI-generated subtitles. Works for a single video, the latest N uploads of a creator, everything they ever published, top videos by views or likes, a date range, or a whole collection / series.
+Exports Bilibili subtitles to Markdown: one md file per video, plus an index. Subtitles come from the human-contributed CC track or from Bilibili's AI-generated track. The CC track is preferred and the AI track is used when no CC track exists. The tool performs no speech recognition and produces no subtitle text of its own.
 
-Language support is limited to whatever Bilibili itself produced — Chinese for essentially every video, occasionally other languages when the uploader supplied them.
+Subtitle language follows whatever tracks Bilibili provides. Nearly every video is Chinese; a small number carry another language uploaded by the creator.
 
 ## What it does
 
@@ -31,17 +31,15 @@ Language support is limited to whatever Bilibili itself produced — Chinese for
 |---|---|
 | Single video | `python scripts/bili_copy.py "https://www.bilibili.com/video/BV1xx411c7mD"` |
 | Latest N uploads | `python scripts/bili_copy.py --up <creator> --limit 10` |
-| Every upload | `python scripts/bili_copy.py --up <creator> --all --yes` |
-| Most liked | `python scripts/bili_copy.py --up <creator> --sort like --limit 10` |
-| Most viewed | `python scripts/bili_copy.py --up <creator> --sort play --limit 10` |
+| All uploads | `python scripts/bili_copy.py --up <creator> --all --yes` |
+| Ranked by likes | `python scripts/bili_copy.py --up <creator> --sort like --limit 10` |
+| Ranked by views | `python scripts/bili_copy.py --up <creator> --sort play --limit 10` |
 | Date range | `python scripts/bili_copy.py --up <creator> --since 2026-10-01 --until 2026-10-31` |
-| One collection / series | `python scripts/bili_copy.py --up <creator> --collection <name>` |
-| Append into an existing folder | `python scripts/bili_copy.py --up <creator> --limit 15 --into <folder>` |
-| Preview only, download nothing | `python scripts/bili_copy.py --up <creator> --limit 10 --dry-run` |
+| Named collection or series | `python scripts/bili_copy.py --up <creator> --collection <name>` |
+| Append to an existing folder | `python scripts/bili_copy.py --up <creator> --limit 15 --into <folder>` |
+| List only, no download | `python scripts/bili_copy.py --up <creator> --limit 10 --dry-run` |
 
-`--up` accepts a creator name, a uid, or a space URL. Add `--zip` to pack the output folder, `--srt` to also emit timestamped files, `--resume` to continue an interrupted run, `--workers` to tune concurrency.
-
-Full help — output layout, naming rules, how to get SESSDATA, FAQ:
+`--up` accepts a creator name, a uid, or a space URL. `--zip` packages the output as a zip archive, `--srt` writes a timeline file, `--resume` skips videos already extracted, `--workers` sets the concurrency, and `--outdir` sets the output root (default `./bili文案`). Full usage:
 
 ```bash
 python scripts/bili_copy.py help
@@ -51,136 +49,151 @@ python scripts/bili_copy.py help
 
 | Item | Requirement |
 |---|---|
-| Python | **3.7+** (3.9 / 3.11 / 3.12 all fine) |
-| Third-party packages | **None.** Do not `pip install` anything |
-| ffmpeg / yt-dlp | **Not needed.** Only the official subtitle JSON is read — no video, no audio |
-| Browser automation | **Not needed.** No Selenium, no Playwright |
-| Network | Access to `api.bilibili.com`, `www.bilibili.com` and the subtitle CDN |
-| Disk | Roughly 20–30 KB of Markdown per 20–30 minute video |
+| Python | 3.7 or later |
+| Third-party packages | None; `pip install` is not needed |
+| ffmpeg / yt-dlp | Not required; only subtitle JSON is read, no audio or video is downloaded |
+| Browser automation | Not required; no dependency on Selenium or Playwright |
+| Network | Access to `api.bilibili.com`, `www.bilibili.com`, and the subtitle CDN |
+| Disk | Roughly 20 to 30 KB for a 20 to 30 minute video |
 
 ## Install
 
-**Option 1 — SkillHub community registry**
+### Option 1: SkillHub
 
 ```bash
 skillhub install bilibili-copy-extractor
 ```
 
-**Option 2 — manual, into a skills directory**
+### Option 2: Manual copy
 
 ```bash
 git clone https://github.com/cincoutstream/bilibili-copy-extractor.git
 ```
 
-Then copy the whole folder into the skills directory of your agent runtime:
+Place the directory in the skills folder of the runtime in use:
 
-- OpenBitFun: `%APPDATA%\openbitfun\skills\bilibili-copy-extractor\`
-- macOS / Linux: `~/.config/openbitfun/skills/bilibili-copy-extractor/`
+| Runtime | Path |
+|---|---|
+| OpenBitFun | `%APPDATA%\openbitfun\skills\bilibili-copy-extractor\` |
+| macOS / Linux | `~/.config/openbitfun/skills/bilibili-copy-extractor/` |
 
-**Option 3 — just run it**
+### Option 3: Run without installing
 
-Installation is optional. `python scripts/bili_copy.py --help` works from a bare checkout.
+From the repository root, run `python scripts/bili_copy.py --help`.
 
-## Prerequisite: SESSDATA
+## Credentials
 
-No third-party login, no API key, no account to create. The only credential needed is a `SESSDATA` cookie from your own Bilibili account.
+The only credential required is the `SESSDATA` cookie of a Bilibili account. No API key and no third-party account are involved.
 
-Bilibili gates subtitle URLs behind the login state: when logged out, `subtitle_url` comes back as an empty string and `is_lock` is `true`. That is an API-level restriction, not a bug in this script — every tool hits it.
+Bilibili returns subtitle URLs only to signed-in clients. Without a session, `subtitle_url` is an empty string and `is_lock` is `true`. This is a restriction on the server side, not a defect in the script.
 
-How to get it (do this yourself; never paste the cookie value into a chat):
+Steps:
 
-1. Log in at `bilibili.com` → `F12` → **Application** → **Cookies** → `https://www.bilibili.com`
-2. Copy the value of the `SESSDATA` row
-3. Store it in any one of these places:
-   - the `--sessdata` flag
-   - the `BILI_SESSDATA` environment variable
-   - a `sessdata.txt` file in the working directory
+1. Sign in to `bilibili.com` in a browser and open the developer tools with F12
+2. Go to Application, then Cookies, and select the `https://www.bilibili.com` domain
+3. Copy the Value of the `SESSDATA` row
+4. Supply the value in any one of the following ways
 
-Priority: flag > environment variable > file.
+| Method | Usage |
+|---|---|
+| Command-line argument | `--sessdata <value>` |
+| Environment variable | `BILI_SESSDATA` |
+| File | `sessdata.txt` in the current directory |
+
+The lookup order is command-line argument, then environment variable, then file. The value is equivalent to an account credential; do not paste it into chat tools or public channels.
 
 ## Output layout
 
-One folder per run, one Markdown file per video, plus an index:
+Each run writes one folder:
 
 ```
 <creator>_最近10条视频文案_20261031/
     01_<video title>_2026-10-31.md
     02_<video title>_2026-10-30.md
-    _index.md        sortable table, clickable links to every file
-    _manifest.json   the same data, machine-readable
-    _progress.json   resume bookkeeping — do not edit by hand
+    _index.md        sortable table linking to each file
+    _manifest.json   the same data, machine readable
+    _progress.json   resume state, do not edit by hand
 ```
 
-Every Markdown file opens with YAML front matter (bvid, title, creator, publish time, duration, views / likes / favorites / coins / danmaku / comments, subtitle source, word count, coverage) followed by the transcript split into paragraphs.
+Folder and file names are generated in Chinese, matching the interface language of the source site. Each md file opens with YAML front matter carrying the bvid, title, creator, publish date, duration, view, like, favourite, coin, danmaku and comment counts, subtitle source, word count and coverage, followed by the segmented transcript.
 
-### Naming rules
+## Naming rules
 
-Folder: `{creator}_{batch}视频文案_{YYYYMMDD}` — the literal word `视频文案` ("video copy") is kept in the filename regardless of interface language.
+The folder name is `{creator}_{batch}视频文案_{date}`:
 
-| Batch | Example folder |
+| Use case | Folder name example |
 |---|---|
 | Single video | `<creator>_2026-10-31_<video title>` |
 | Latest N | `<creator>_最近10条视频文案_20261031` |
-| Oldest N | `<creator>_最早10条视频文案_20261031` |
-| Every upload | `<creator>_全部N条视频文案_20261031` |
+| Earliest N | `<creator>_最早10条视频文案_20261031` |
+| All uploads | `<creator>_全部N条视频文案_20261031` |
 | Most liked | `<creator>_点赞最多10条视频文案_20261031` |
 | Most viewed | `<creator>_播放最多10条视频文案_20261031` |
 | Date range | `<creator>_2026-10-20至2026-10-25视频文案_20261031` |
-| Collection | `<creator>_合集-<collection>视频文案_20261031` |
+| Collection or series | `<creator>_合集-<name>视频文案_20261031` |
 
-File: `{NN}_{title}_{YYYY-MM-DD}.md`
+The file name is `{nn}_{title}_{publish date}.md`:
 
-- **NN** ranks the video inside the batch and matches the `_index.md` table, so the folder's alphabetical order is your ranking
-- **Title** comes right after the number so you can recognise a file at a glance; truncated to 50 characters, Windows-illegal characters (`\ / : * ? " < > |`) replaced
-- **Date** goes last, so you can see when it was published without opening the file
+| Part | Rule |
+|---|---|
+| Sequence number | Rank within the batch, matching the `_index.md` table so that alphabetical folder order equals rank order |
+| Title | Follows the sequence number, truncated to 50 characters, with the Windows-reserved characters `\ / : * ? " < > \|` replaced |
+| Date | Placed last, so the publish date is readable without opening the file |
 
-### Appending into the same folder (`--into`)
+## Appending to an existing folder
 
-When you would rather grow one project folder than create a new one every run:
+With `--into`, output goes into one folder instead of a new batch folder:
 
 ```bash
-python scripts/bili_copy.py --up <creator> --limit 10                                  # first run: normal folder
-python scripts/bili_copy.py --up <creator> --limit 15 --into <folder name or path>      # later runs: append
+# First run: creates the folder
+python scripts/bili_copy.py --up <creator> --limit 10
+
+# Later runs: append into that folder
+python scripts/bili_copy.py --up <creator> --limit 15 --into <folder name or path>
 ```
 
-- Videos already in the folder are deduplicated by **bvid** and skipped — nothing is downloaded twice
-- New entries continue after the highest existing number (10 items → the next is `11`); existing files are never renamed
-- `_index.md` and `_manifest.json` are rewritten with old and new entries merged
-- The folder name is the project name, so it does not change when the item count does
+Rules applied when appending:
 
-Drop `--into` to start a fresh batch folder instead.
+| Case | Behaviour |
+|---|---|
+| Video already in the folder | Skipped after a bvid check, not downloaded again |
+| Numbering of new entries | Continues after the highest existing number; existing files are not renamed |
+| `_index.md` and `_manifest.json` | Rewritten with the old and new entries merged |
+| Folder name | Unchanged, regardless of entry count |
+
+Without `--into`, a new batch folder is created.
 
 ## Sorting and cost
 
-| Sort | Cost | Notes |
+| Sort key | Cost | Notes |
 |---|---|---|
-| `newest` / `oldest` | one request | fetches only what you asked for |
-| `play` | full pagination — slower as the upload count grows | the list endpoint already carries view counts (accurate), but finding the global maximum means walking every page |
-| `like` | one lookup per video | the list endpoint has no like count at all; use `--scan N` to cap the candidate pool |
+| `newest` / `oldest` | One request | Reads only the requested number of entries |
+| `play` | Requires paging through the whole list; longer for prolific creators | The list endpoint carries view counts, so the data is exact |
+| `like` | One request per video | The list endpoint carries no like counts; use `--scan N` to bound the candidate pool |
 
-Creator upload lists are cached for 30 minutes, so a repeated query returns instantly.
+The creator upload list is cached for 30 minutes, so repeated queries issue no new requests.
 
 ## Known limitations
 
-- **AI subtitles do not exist at upload time.** Bilibili generates them only after someone opens the player and picks 字幕 → 中文 (about 10–30 seconds). After that they are cached for everyone. When a video has none, the script writes a note file and records it in the index — trigger it in the player once, then re-run.
-- **Homophone errors come from Bilibili's transcription,** not from extraction. Cleaning them up requires a language-model pass afterwards.
-- **Some AI subtitles carry no punctuation at all.** Paragraph breaks are restored with a three-tier rule: sentence-final punctuation → discourse markers → function-word boundaries.
-- **The creator-space API is rate limited.** Push `--workers` too high and you will get HTTP 412.
+- The AI track has to be generated first. Bilibili creates it only after a user selects 字幕 then 中文 in the player, which takes about 10 to 30 seconds on first use and is then cached for everyone. When no track is available the script writes a note file and records it in the index; trigger the track in the player and run the command again.
+- Homophone errors come from Bilibili's own transcription, not from extraction. Cleaning them up requires a separate language model pass.
+- Some AI tracks carry no punctuation. The script restores segmentation using sentence-ending punctuation, discourse markers, and function-word boundaries, in that order.
+- The space API is rate limited. A high `--workers` value can trigger HTTP 412.
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| Empty subtitle list | No SESSDATA, or it expired — copy a fresh one |
-| `code=-352` / `HTTP 412` | Rate limited; wait a few minutes or lower `--workers` |
-| A collection appears to contain 1 episode | The name did not match; run `--list-collections` to see exact names |
-| Fewer videos than expected | Check `--limit`; date ranges auto-expand, other modes fetch exactly what you ask for |
+| Empty subtitle list | Missing or expired SESSDATA; fetch the value again |
+| `code=-352` or `HTTP 412` | Rate limiting; wait a few minutes and retry, or lower `--workers` |
+| A collection returns 1 video | The name did not match; run `--list-collections` to get the exact name |
+| Fewer videos than expected | Check `--limit`. The date-range mode expands automatically; other modes take exactly the requested count |
 
 ## Security
 
-`sessdata.txt` is a login credential: it is written locally only, never logged, never echoed. Delete it when you are done, or log out on Bilibili to invalidate it immediately.
+`sessdata.txt` is equivalent to an account credential. The script writes it only to local disk, never to logs, and never echoes it to the terminal. Delete the file when finished, or sign out of Bilibili to invalidate it immediately.
 
-`.gitignore` already excludes `sessdata.txt`, but **double-check before every commit** that no credential slipped into the repository.
+`.gitignore` excludes `sessdata.txt`. Verify before committing that no credential has reached the repository.
 
 ## License
 
