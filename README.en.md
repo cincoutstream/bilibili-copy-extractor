@@ -24,6 +24,18 @@ Exports Bilibili subtitles to Markdown: one md file per video, plus an index tab
 
 Subtitle language follows the tracks Bilibili provides. Nearly every video is Chinese; a small number carry another language uploaded by the creator.
 
+## Highlights
+
+| Highlight | Detail |
+|---|---|
+| Official subtitles | Reads the human CC track or the AI-generated track from Bilibili instead of re-transcribing audio, so wording matches the site |
+| Batch extraction from one sentence | Name the creator and the count; links do not have to be pasted one by one |
+| Readable output | One Markdown file per video, opening with title, publish date, view and like counts, followed by the segmented transcript |
+| The folder is the index | Sequence number first and publish date last, so alphabetical order equals rank order; a clickable index table is included |
+| Ranking and collections | Take the top N by likes or views, or extract a single collection or series |
+| Resumable | A batch that stops midway skips completed videos when it is started again |
+| Packageable | The result can be zipped, with subtitle timeline files attached on request |
+
 ## What the skill can do
 
 The left column names the task, the right column gives a request that can be sent to an agent as it stands.
@@ -36,7 +48,7 @@ The left column names the task, the right column gives a request that can be sen
 | Top videos by likes | Export the 10 most-liked videos of <creator> as text |
 | Top videos by views | Export the 10 most-viewed videos of <creator> as text |
 | Date range | Export the videos <creator> published in October 2026 |
-| Collection or series | Export the subtitles of the "<series>" series from <creator> |
+| Collection or series | Export the subtitles of the <series> series from <creator> |
 | List collections | List the collections and series of <creator> |
 | List only | List the titles of the 10 most recent videos from <creator> before extracting |
 | Append to an existing folder | Add the 15 most recent videos of <creator> to the folder from the last run |
@@ -90,6 +102,39 @@ Steps:
 
 The value is equivalent to an account credential. Do not paste it into group chats or public channels. It stays on the local machine, is never written to logs, and is never echoed in the terminal or the conversation. It can be removed after the run, or invalidated immediately by signing out of Bilibili.
 
+## Walkthrough
+
+A complete extraction, start to finish.
+
+1. State the request. For a single video, the link is enough:
+
+```
+Export the subtitles of this video as text: https://www.bilibili.com/video/BV1xx411c7mD
+```
+
+For a batch from one creator, name the creator and the count:
+
+```
+Export the 10 most-liked videos of <creator> as text
+```
+
+2. Provide the credential on first use. Copy `SESSDATA` as described in the previous section and send it to the agent; later runs reuse it.
+
+3. Wait for the run to finish. A batch is processed video by video, so a large batch takes a while. A run of more than 100 videos, or a like-sorted run over more than 400 candidates, reports the expected scale and asks for confirmation first.
+
+4. Collect the output. The result lands in a `bili文案` folder under the working directory:
+
+```
+<creator>_点赞最多10条视频文案_20261031/
+    01_<video title>_2026-10-31.md
+    02_<video title>_2026-10-29.md
+    _index.md
+```
+
+Open `_index.md` for a table in rank order with links to each file. The folder itself can be archived as is.
+
+If a video yields no subtitles, Bilibili has probably not generated its AI track yet: open the video in the player, select 字幕 then 中文 once, and ask the agent to retry.
+
 ## Output layout
 
 Each run writes one folder:
@@ -128,49 +173,7 @@ File names follow `{index}_{title}_{publish date}.md`:
 | Title | Follows the index, truncated to 50 characters. The Windows-reserved characters `\ / : * ? " < > \|` are replaced with underscores |
 | Date | Placed last, so the publish date is visible from the directory listing |
 
-## Appending to an existing folder
-
-By default every run creates a new folder. To merge newly extracted videos into an existing folder, name that folder in the request; the output goes into it and no new batch folder is created.
-
-The following rules apply:
-
-| Case | Behaviour |
-|---|---|
-| Video already in the folder | Skipped after a bvid check, not extracted again |
-| Numbering of new entries | Continues after the highest existing number; existing files are not renamed |
-| Index and manifest files | Rewritten with the old and new entries merged |
-| Folder name | Unchanged regardless of entry count. A folder named `最近10条` may end up holding 15 files |
-| Folder does not exist | Created automatically, so the folder can serve as a long-running project directory |
-
-Without a target folder, a new batch folder is created.
-
-## Sort order and run time
-
-| Sort order | Run time | Notes |
-|---|---|---|
-| Latest or earliest N | Shortest; only the requested entries are read | The upload list is not traversed in full |
-| By views | Longer for creators with many uploads | The whole list must be traversed to find the highest view count |
-| By likes | Longer for larger batches | Like counts are absent from the list data and must be read per video. Candidates are drawn from the 200 most recent uploads by default, and a wider range can be requested |
-
-A run is confirmed first when it would extract more than 100 videos, and when sorting by likes over a candidate range of more than 400 videos.
-
-The result of a full upload-list read is cached for 30 minutes, so repeat extractions for the same creator within that window reuse it.
-
-## Known limitations
-
-- The AI track must exist before it can be read. Bilibili creates it only after a user selects 字幕 then 中文 in the player, which takes about 10 to 30 seconds the first time and is then available to everyone. When no track is available, a note file is written into the folder and recorded in the index; trigger the track in the player and extract again.
-- Homophone errors come from Bilibili's own transcription, not from extraction. Cleaning them up requires an additional language model pass.
-- Some AI tracks carry no punctuation. Segmentation is restored from sentence-ending punctuation, discourse markers and function-word boundaries.
-- The API is rate limited. Processing too many videos at once triggers risk control, which appears as a rejected request. Wait a few minutes and retry, or process fewer videos at a time in several batches.
-
-## Troubleshooting
-
-| Symptom | Cause and fix |
-|---|---|
-| Empty subtitle list | Missing or expired SESSDATA; obtain the value again and retry |
-| Request rejected with 412 or -352 | Bilibili risk control; wait a few minutes and retry, or process fewer videos at a time in several batches |
-| A collection returns 1 video | The name did not match. Ask the agent to list the collections and series of the creator, then use the exact name |
-| Fewer videos than expected | Check the requested count. The date-range mode expands automatically; other modes take exactly the requested count |
+When appending to an existing folder, the folder name stays the same, new entries continue after the highest existing number, and videos already present are not extracted again.
 
 ## License
 
