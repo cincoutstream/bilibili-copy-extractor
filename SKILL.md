@@ -2,7 +2,7 @@
 name: bilibili-copy-extractor
 slug: bilibili-copy-extractor
 displayName: B站视频文案提取
-version: 1.0.1
+version: 1.0.2
 summary: 把 B站视频的官方字幕（人工 CC 优先，否则 B站 AI 字幕）批量导出为 Markdown 文案包，支持单视频、UP 主最近 N 条/全部/日期区间、合集/系列、按播放或点赞排名，并可追加进已有项目文件夹。无需登录任何第三方平台、无需 API Key，只用你自己的 B站账号取到 SESSDATA 即可运行。
 tags: [bilibili, 字幕, 文案, 视频转文字, subtitle, markdown, up主]
 license: MIT
