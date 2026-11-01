@@ -1,0 +1,21 @@
+# 登录凭据，绝对不能进仓库
+sessdata.txt
+*.sessdata
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 提取产物与临时文件
+bili文案/
+output/
+*.zip
+.wbi_cache.json
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
