@@ -1,34 +1,26 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="B站文案提取">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#00A1D6"/>
-      <stop offset="100%" stop-color="#0B6E9B"/>
-    </linearGradient>
-    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#EAF6FB"/>
+      <stop offset="0%" stop-color="#FB7299"/>
+      <stop offset="100%" stop-color="#FF9BB6"/>
     </linearGradient>
   </defs>
 
   <rect width="512" height="512" rx="116" fill="url(#bg)"/>
 
-  <!-- 字幕卡片 -->
-  <rect x="88" y="132" width="336" height="248" rx="32" fill="url(#card)" opacity="0.98"/>
+  <!-- 天线 -->
+  <g stroke="#FFFFFF" stroke-width="22" stroke-linecap="round">
+    <line x1="206" y1="162" x2="176" y2="110"/>
+    <line x1="306" y1="162" x2="336" y2="110"/>
+  </g>
+  <circle cx="176" cy="110" r="14" fill="#FFFFFF"/>
+  <circle cx="336" cy="110" r="14" fill="#FFFFFF"/>
 
-  <!-- 粉色播放键 -->
-  <circle cx="156" cy="196" r="28" fill="#FB7299"/>
-  <path d="M149 183 L171 196 L149 209 Z" fill="#FFFFFF"/>
+  <!-- 电视机身 -->
+  <rect x="118" y="156" width="276" height="230" rx="34" fill="#FFFFFF"/>
 
-  <!-- 标题行 -->
-  <rect x="200" y="184" width="184" height="24" rx="12" fill="#00A1D6" opacity="0.92"/>
-
-  <!-- 文案行 -->
-  <rect x="120" y="248" width="272" height="20" rx="10" fill="#BFD4E0"/>
-  <rect x="120" y="288" width="216" height="20" rx="10" fill="#BFD4E0"/>
-  <rect x="120" y="328" width="148" height="20" rx="10" fill="#FB7299" opacity="0.85"/>
-
-  <!-- 提取箭头 -->
-  <path d="M356 300 L356 344" stroke="#0B6E9B" stroke-width="14" stroke-linecap="round" opacity="0.55"/>
-  <path d="M338 330 L356 350 L374 330" stroke="#0B6E9B" stroke-width="14" stroke-linecap="round"
-        stroke-linejoin="round" fill="none" opacity="0.55"/>
+  <!-- 字幕线（代表提取出的文案） -->
+  <rect x="162" y="212" width="196" height="26" rx="13" fill="#00A1D6"/>
+  <rect x="162" y="264" width="156" height="24" rx="12" fill="#8FC9E2"/>
+  <rect x="162" y="314" width="200" height="24" rx="12" fill="#E03E6B"/>
 </svg>

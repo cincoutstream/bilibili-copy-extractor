@@ -2,11 +2,12 @@
 name: bilibili-copy-extractor
 slug: bilibili-copy-extractor
 displayName: B站视频文案提取
-version: 1.0.0
-summary: 把 B站视频的官方字幕（人工 CC 优先，否则 B站 AI 字幕）批量导出为 Markdown 文案包，支持单视频、UP 主最近 N 条/全部/日期区间、合集/系列、按播放或点赞排名，并可追加进已有项目文件夹。
+version: 1.0.1
+summary: 把 B站视频的官方字幕（人工 CC 优先，否则 B站 AI 字幕）批量导出为 Markdown 文案包，支持单视频、UP 主最近 N 条/全部/日期区间、合集/系列、按播放或点赞排名，并可追加进已有项目文件夹。无需登录任何第三方平台、无需 API Key，只用你自己的 B站账号取到 SESSDATA 即可运行。
 tags: [bilibili, 字幕, 文案, 视频转文字, subtitle, markdown, up主]
 license: MIT
-description: Use when 需要把 B站（bilibili）视频的口播内容转成文字稿，例如单个视频提取文案/字幕、某个 UP 主的最近 N 条或全部视频文案、按点赞或播放量排名的精选文案、某段日期区间的视频文案，或某个合集/系列课程的整套文案。触发词：B站文案、哔站文案、提取视频字幕、视频转文字、UP主文案、合集文案、口播稿。
+homepage: https://github.com/cincoutstream/bilibili-copy-extractor
+description: 无需登录其他平台、无需 API Key，只要用自己的 B站账号取到 SESSDATA 就能跑。Use when 需要把 B站（bilibili）视频的口播内容转成文字稿，例如单个视频提取文案/字幕、某个 UP 主的最近 N 条或全部视频文案、按点赞或播放量排名的精选文案、某段日期区间的视频文案，或某个合集/系列课程的整套文案。触发词：B站文案、哔站文案、提取视频字幕、视频转文字、UP主文案、合集文案、口播稿。
 ---
 
 # B站视频文案提取
@@ -27,6 +28,8 @@ description: Use when 需要把 B站（bilibili）视频的口播内容转成文
 只用 Python 3.7 以上、能联网的机器即可，装完 Python 就能直接跑。若 `python` 命令不存在，先装 Python 或改用 `py` 启动器。
 
 ## 前提：必须有 SESSDATA
+
+**不需要登录任何第三方平台、不需要 API Key、不需要注册账号**——只要你自己的 B站账号已经登录，取出 `SESSDATA` 就能跑。
 
 B站把字幕地址锁在登录态后面——未登录时 `subtitle_url` 是空字符串、`is_lock=true`。
 **没有 SESSDATA，任何工具都只能拿到空字幕列表**，这是接口层面的限制，不是脚本 bug。

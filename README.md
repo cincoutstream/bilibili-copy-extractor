@@ -63,6 +63,8 @@ git clone https://github.com/cincoutstream/bilibili-copy-extractor.git
 
 ## 前提：必须有 SESSDATA
 
+**不需要登录其他平台、不需要 API Key、不需要注册任何账号。** 只用你自己的 B站账号取一次 `SESSDATA` 即可。
+
 B站把字幕地址锁在登录态后面——未登录时 `subtitle_url` 是空字符串、`is_lock=true`。
 **没有 SESSDATA，任何工具都只能拿到空字幕列表**，这是接口层面的限制，不是脚本 bug。
 
